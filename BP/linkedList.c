@@ -1,20 +1,31 @@
 #include "linkedList.h"
-#include "types.h"
+
 
 LinkedListNode* GetNewNode()
 {
 	LinkedListNode* node;
 	node = (LinkedListNode*)malloc(sizeof(LinkedListNode));
-	node->Next = NULL;
-	node->Previous = NULL;
+	
+	if (node != NULL)
+	{
+		node->Next = NULL;
+		node->Previous = NULL;
+	}
+
+	return node;
 }
 
 LinkedList* GetNewLinkedList()
 {
 	LinkedList* list;
 	list = (LinkedList*)malloc(sizeof(LinkedList));
-	list->Head = NULL;
-	list->Tail = NULL;
+
+	if (list != NULL)
+	{
+		list->Head = NULL;
+		list->Tail = NULL;
+	}
+
 	return list;
 }
 
@@ -70,9 +81,9 @@ void Pop(LinkedList* list)
 
 }
 
-BOOL remove_node(LinkedListNode** list_head, char* elem) {
+BOOL remove_node(LinkedListNode** list_head, void* elem, BOOL compareFnc(const void*, const void*)) 
+{
 	if (*list_head == NULL) {
-		printf("Cannot remove element, list is empty\n");
 		return FALSE;
 	}
 	LinkedListNode* it = *list_head;

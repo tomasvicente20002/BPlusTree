@@ -1,5 +1,6 @@
 #pragma once
 #include <stdlib.h>
+#include "types.h"
 typedef struct LinkedListNode_st
 {
 	/// <summary>
@@ -33,4 +34,4 @@ LinkedListNode* GetNewNode();
 LinkedList* GetNewLinkedList();
 LinkedListNode* AddToLinkedList(LinkedList* list, void* value);
 void Pop(LinkedList* list);
-BOOL remove_node(LinkedListNode** list_head, char* elem);
+BOOL remove_node(LinkedListNode** list_head, void* elem, BOOL compareFnc(const void*, const void*));
