@@ -21,4 +21,6 @@ typedef struct laureate_st {
 	char motivation[350];
 } laureate_t;
 
+laureate_t *getNewLiveLaureate();
+
 // TODO: Reference additional headers your program requires here.
