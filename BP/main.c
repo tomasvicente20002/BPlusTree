@@ -2,7 +2,7 @@
 //
 
 #include "main.h"
-#include "linkedList.h"
+
 
 laureate_t* getNewLiveLaureate()
 {
@@ -27,13 +27,56 @@ laureate_t* getNewLiveLaureate()
 }
 
 
+BOOL ReadFile(char path[], LinkedList* list)
+{
+	FILE* ptrFile = fopen(path, "r");
 
-int main()
+	if (ptrFile == NULL)
+		return FALSE;
+
+	laureate_t* record = getNewLiveLaureate();
+
+	if (record == NULL)
+	{
+		fclose(ptrFile);
+		return FALSE;
+	}
+
+	while(fscanf(ptrFile, " %d;%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%d;%[^;];%d;%[^\n]",
+		&record->id,
+		record->firstname,
+		record->surname,
+		record->birthdate,
+		record->died,
+		record->Country,
+		record->CountryCode,
+		record->City,
+		record->gender,
+		&record->year,
+		record->category,
+		&record->share, 
+		record->motivation) != 0)
+	{
+		AddToLinkedList(list, record);
+		record = NULL;
+		record = getNewLiveLaureate();
+
+		if (record == NULL)
+		{
+			fclose(ptrFile);
+			return FALSE;
+		}
+	}
+
+}
+
+int main(int argc,char *argv[])
 {
 	LinkedList* list = GetNewLinkedList();
-	int a = 8;
 
-	AddToLinkedList(list, &a);
+	char* fileName = "C:\\Users\\tomas\\Downloads\\new_nobel_prizes.csv";
+
+	ReadFile(fileName, list);
 			
 	return 0;
 }

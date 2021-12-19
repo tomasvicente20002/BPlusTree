@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "linkedList.h"
+#include "mylib.h"
+
 
 typedef struct laureate_st {
 	uint32_t id;

@@ -1,6 +1,7 @@
 #pragma once
 #include <stdlib.h>
-#include "types.h"
+#include "mylib.h"
+
 typedef struct LinkedListNode_st
 {
 	/// <summary>
@@ -17,7 +18,6 @@ typedef struct LinkedListNode_st
 	struct LinkedListNode_st* Previous;
 
 } LinkedListNode;
-
 typedef struct LinkedList_st
 {
 	/// <summary>
@@ -29,7 +29,6 @@ typedef struct LinkedList_st
 	/// </summary>
 	LinkedListNode* Tail;
 } LinkedList;
-
 LinkedListNode* GetNewNode();
 LinkedList* GetNewLinkedList();
 LinkedListNode* AddToLinkedList(LinkedList* list, void* value);
