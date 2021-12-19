@@ -2,6 +2,7 @@
 //
 
 #include "main.h"
+#include "linkedList.h"
 
 laureate_t* getNewLiveLaureate()
 {
@@ -29,6 +30,10 @@ laureate_t* getNewLiveLaureate()
 
 int main()
 {
+	LinkedList* list = GetNewLinkedList();
+	int a = 8;
+
+	AddToLinkedList(list, &a);
 			
 	return 0;
 }
