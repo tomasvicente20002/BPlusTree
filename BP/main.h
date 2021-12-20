@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include "linkedList.h"
 #include "mylib.h"
-
+#include "BPlusTree.h"
 
 typedef struct laureate_st {
 	uint32_t id;
@@ -24,6 +24,8 @@ typedef struct laureate_st {
 	char motivation[350];
 } laureate_t;
 
+
 laureate_t *getNewLiveLaureate();
+
 
 // TODO: Reference additional headers your program requires here.

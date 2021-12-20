@@ -28,6 +28,10 @@ typedef struct LinkedList_st
 	/// Cauda (ultimo elemento)
 	/// </summary>
 	LinkedListNode* Tail;
+	/// <summary>
+	/// Quantidade de elementos
+	/// </summary>
+	int Count;
 } LinkedList;
 LinkedListNode* GetNewNode();
 LinkedList* GetNewLinkedList();

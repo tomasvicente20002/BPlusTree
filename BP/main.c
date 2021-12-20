@@ -27,6 +27,9 @@ laureate_t* getNewLiveLaureate()
 }
 
 
+
+
+
 BOOL ReadFile(char path[], LinkedList* list)
 {
 	FILE* ptrFile = fopen(path, "r");

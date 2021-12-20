@@ -9,7 +9,7 @@ LinkedListNode* GetNewNode()
 	if (node != NULL)
 	{
 		node->Next = NULL;
-		node->Previous = NULL;
+		node->Previous = NULL;		
 	}
 
 	return node;
@@ -24,6 +24,7 @@ LinkedList* GetNewLinkedList()
 	{
 		list->Head = NULL;
 		list->Tail = NULL;
+		list->Count = -1;
 	}
 
 	return list;
@@ -54,6 +55,8 @@ LinkedListNode* AddToLinkedList(LinkedList* list, void* value)
 	//A cauda é igual o nova a inserir
 	list->Tail = node;
 
+	list->Count += 1;
+
 	return node;
 }
 
@@ -79,6 +82,21 @@ void Pop(LinkedList* list)
 		list->Tail->Next = NULL;
 	}
 
+	list->Count -= 1;
+
+}
+
+BOOL RemoveLinkedListNode(LinkedList* list, void* elem, BOOL compareFnc(const void*, const void*))
+{
+	if (remove_node(&list->Head, elem, compareFnc))
+	{
+		list->Count += 1;
+		return TRUE;
+	}
+	else
+		return FALSE
+
+
 }
 
 BOOL remove_node(LinkedListNode** list_head, void* elem, BOOL compareFnc(const void*, const void*)) 
@@ -99,12 +117,15 @@ BOOL remove_node(LinkedListNode** list_head, void* elem, BOOL compareFnc(const v
 				free(it);	// Free the container, not the data
 				it = NULL;
 				*list_head = NULL;
+			
 				return TRUE;
 			}
 			if (it->Next == NULL) {	// Last element
 				it->Previous->Next = NULL;
 				free(it);
-				it = NULL;
+				it = NULL;			
+				
+
 				return TRUE;
 			}
 			if (it->Previous == NULL) {
