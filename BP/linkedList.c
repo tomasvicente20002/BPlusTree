@@ -24,11 +24,74 @@ LinkedList* GetNewLinkedList()
 	{
 		list->Head = NULL;
 		list->Tail = NULL;
-		list->Count = -1;
+		list->Count = 0;
 	}
 
 	return list;
 }
+
+LinkedListNode* AddToTheBeginingLinkedList(LinkedList* list, void* value)
+{
+	LinkedListNode* node = GetNewNode();
+	node->Value = value;
+	node->Previous = NULL;
+
+	//Cenário 1 lista está vazia
+	if (list->Head == NULL && list->Tail == NULL)
+	{
+		//Cabeça e igual ao nó
+		list->Head = node;
+		list->Tail = node;
+	}
+	else
+	{
+		list->Head->Previous = node;
+		node->Next = list->Head;
+		list->Head = node;
+	}
+
+	return node;
+}
+
+LinkedListNode* AddOrderlyToLinkedList(LinkedList* list, void* value, BOOL compareFnc(const void*, const void*))
+{
+
+
+	//Cenário 1 lista está vazia
+	if (list->Head == NULL && list->Tail == NULL)
+	{	//Obter um novo nó
+		return AddToLinkedList(list, value);
+	}
+	//Temos que ir procurar o sitio certo a inserir
+	else
+	{
+		LinkedListNode* tempNode = list->Head;
+
+
+		while (tempNode != NULL)
+		{
+			if (compareFnc(tempNode->Value, value))
+			{
+				//Adicao normal no fim da lista
+				if (tempNode == list->Tail)
+					return AddToLinkedList(list, value);
+				else
+				{
+					//Temos que inserir a meio dos nos
+					return NULL;
+
+				}
+			}
+
+			tempNode = tempNode->Next;
+		}
+
+		//Chegamos ao fim e não encontramos um sitio onde inserir por isso fica no fim
+		return AddToLinkedList(list, value);
+	}
+}
+
+
 
 LinkedListNode* AddToLinkedList(LinkedList* list, void* value)
 {
@@ -59,6 +122,8 @@ LinkedListNode* AddToLinkedList(LinkedList* list, void* value)
 
 	return node;
 }
+
+
 
 void Pop(LinkedList* list)
 {
@@ -94,7 +159,7 @@ BOOL RemoveLinkedListNode(LinkedList* list, void* elem, BOOL compareFnc(const vo
 		return TRUE;
 	}
 	else
-		return FALSE
+		return FALSE;
 
 
 }

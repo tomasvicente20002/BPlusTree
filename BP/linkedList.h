@@ -35,6 +35,10 @@ typedef struct LinkedList_st
 } LinkedList;
 LinkedListNode* GetNewNode();
 LinkedList* GetNewLinkedList();
+LinkedListNode* AddToTheBeginingLinkedList(LinkedList* list, void* value);
+LinkedListNode* AddOrderlyToLinkedList(LinkedList* list, void* value, BOOL compareFnc(const void*, const void*));
 LinkedListNode* AddToLinkedList(LinkedList* list, void* value);
-void Pop(LinkedList* list);
 BOOL remove_node(LinkedListNode** list_head, void* elem, BOOL compareFnc(const void*, const void*));
+BOOL RemoveLinkedListNode(LinkedList* list, void* elem, BOOL compareFnc(const void*, const void*));
+void Pop(LinkedList* list);
+

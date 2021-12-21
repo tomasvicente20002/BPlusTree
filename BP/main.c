@@ -30,22 +30,24 @@ laureate_t* getNewLiveLaureate()
 
 
 
-BOOL ReadFile(char path[], LinkedList* list)
+BOOL ReadFile(char path[], BPlusTree* root)
 {
 	FILE* ptrFile = fopen(path, "r");
+
 
 	if (ptrFile == NULL)
 		return FALSE;
 
 	laureate_t* record = getNewLiveLaureate();
+	BPlusTreeNode* node = getNewBPlusTreeNode();
 
-	if (record == NULL)
+	if (record == NULL || node == NULL)
 	{
 		fclose(ptrFile);
 		return FALSE;
 	}
 
-	while(fscanf(ptrFile, " %d;%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%d;%[^;];%d;%[^\n]",
+	while (fscanf(ptrFile, " %d;%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%d;%[^;];%d;%[^\n]",
 		&record->id,
 		record->firstname,
 		record->surname,
@@ -57,30 +59,41 @@ BOOL ReadFile(char path[], LinkedList* list)
 		record->gender,
 		&record->year,
 		record->category,
-		&record->share, 
+		&record->share,
 		record->motivation) != 0)
 	{
-		AddToLinkedList(list, record);
+		node->data = record;
+		node->key = record->id;
+
+		addToBPlusTree(root, node);
+
 		record = NULL;
 		record = getNewLiveLaureate();
 
-		if (record == NULL)
+		node = NULL;
+		node = getNewBPlusTreeNode();
+
+		printf("%d", root->root->key);
+
+		if (record == NULL|| node == NULL)
 		{
 			fclose(ptrFile);
 			return FALSE;
 		}
 	}
 
+	return TRUE;
+
 }
 
-int main(int argc,char *argv[])
+int main(int argc, char* argv[])
 {
-	LinkedList* list = GetNewLinkedList();
+	BPlusTree* root = getNewBPlusTree(5);
 
 	char* fileName = "C:\\Users\\tomas\\Downloads\\new_nobel_prizes.csv";
 
-	ReadFile(fileName, list);
-			
+	ReadFile(fileName, root);	
+
 	return 0;
 }
 

@@ -26,6 +26,7 @@ typedef struct laureate_st {
 
 
 laureate_t *getNewLiveLaureate();
+BOOL ReadFile(char path[], BPlusTreeNode** root);
 
 
 // TODO: Reference additional headers your program requires here.
