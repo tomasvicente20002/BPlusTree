@@ -47,7 +47,9 @@ BOOL ReadFile(char path[], BPlusTree* root)
 		return FALSE;
 	}
 
-	while (fscanf(ptrFile, " %d;%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%d;%[^;];%d;%[^\n]",
+
+	int a;
+	while ((a= fscanf(ptrFile, " %d;%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%d;%[^;];%d;%[^\n]",
 		&record->id,
 		record->firstname,
 		record->surname,
@@ -60,12 +62,12 @@ BOOL ReadFile(char path[], BPlusTree* root)
 		&record->year,
 		record->category,
 		&record->share,
-		record->motivation) != 0)
+		record->motivation)) != 0)
 	{
 		node->data = record;
 		node->key = record->id;
 
-		addToBPlusTree(root, node);
+		addToBPlusTree(&root->root, node, root->size);
 
 		record = NULL;
 		record = getNewLiveLaureate();
