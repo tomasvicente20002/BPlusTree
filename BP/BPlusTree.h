@@ -7,9 +7,9 @@
 
 
 typedef struct BPlusTreeNode_st {
-	uint32_t key;/*Key*/
-	void* data;/*Pointer to data*/
-	struct BPlusTreeNode_st* parent; /*Parent node*/
+	uint32_t Key;/*Key*/
+	void* Data;/*Pointer to data*/
+	struct BPlusTreeNode_st* Parent; /*Parent node*/
 	/*
 	|	|	|	|
 	|1	|2	|3	|
@@ -29,4 +29,4 @@ typedef struct BPlusTree_st {
 
 BPlusTreeNode* getNewBPlusTreeNode();
 BPlusTree* getNewBPlusTree(int size);
-BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, int size);
+BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNode* parent, int size, int height);

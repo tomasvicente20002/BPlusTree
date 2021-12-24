@@ -1,7 +1,7 @@
 
 #include "mylib.h"
 
-
+/*
 
 struct String* AlocNewString()
 {
@@ -57,11 +57,11 @@ struct String Concat(const char* PrimeiraParte, const char* SegundaParte)
 
     retValue.Length = strlen(PrimeiraParte) + strlen(SegundaParte) + 1;
 
-    retValue.String = malloc(retValue.Length); /*alocar memoria*/
+    retValue.String = malloc(retValue.Length); //alocar memoria
 
-    strcpy(retValue.String, PrimeiraParte); /* Copiar  PrimeiraParte*/
+    strcpy(retValue.String, PrimeiraParte);  //Copiar  PrimeiraParte
 
-    strcat(retValue.String, SegundaParte); /* Copiar  SegundaParte*/
+    strcat(retValue.String, SegundaParte); //Copiar  SegundaParte
 
     return retValue;
 }
@@ -72,11 +72,11 @@ struct String* ConcatString(struct String* PrimeiraParte, struct String* Segunda
 
     retValue->Length = PrimeiraParte->Length + SegundaParte->Length + 1;
 
-    retValue->String = malloc(retValue->Length); /*alocar memoria*/
+    retValue->String = malloc(retValue->Length); //alocar memoria
 
-    strcpy(retValue->String, PrimeiraParte->String); /* Copiar  PrimeiraParte*/
+    strcpy(retValue->String, PrimeiraParte->String);  //Copiar  PrimeiraParte
 
-    strcat(retValue->String, SegundaParte->String); /* Copiar  SegundaParte*/
+    strcat(retValue->String, SegundaParte->String); // Copiar  SegundaParte
 
     return retValue;
 }
@@ -87,7 +87,8 @@ struct String* SubString(struct String* value, int position, int length)
     int c;
     retValue->Length = length;
 
-    retValue->String = (char*)malloc((retValue->Length + 1) * sizeof(char)); /*alocar memoria para a string mais o \0*/
+    retValue->String = (char*)malloc((retValue->Length + 1) * sizeof(char)); 
+    //alocar memoria para a string mais o \0
 
     for (c = 0; c < length; c++)
         retValue->String[c] = value->String[c + position];
@@ -106,7 +107,7 @@ struct StringArray* SplitString(struct String* value, const char caracter)
     int cntSubstring = 0;
     struct StringArray* retValue = NULL;
 
-    /*Contar quantos caracter existem para saber quanto espaço de memoria tem-se que alocar*/
+    //Contar quantos caracter existem para saber quanto espaço de memoria tem-se que alocar
     for (idx = 0; idx < value->Length; idx++)
         if (value->String[idx] == caracter)
             cntCaracter++;
@@ -209,3 +210,4 @@ void ToUpperRef(char* letter)
 
     return;
 }
+*/

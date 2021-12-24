@@ -11,6 +11,7 @@ typedef int BOOL;
 #define LINE_BREAK '\n'
 #define NULL_CHAR  '\0'
 
+/*
 struct String
 {
     int Length;
@@ -39,3 +40,4 @@ int LasIndexOf(struct String* value, const char caracter);
 BOOL WriteToFile(struct String* fileName, struct StringArray* value);
 char ToUpper(char letter);
 void ToUpperRef(char* letter);
+*/
