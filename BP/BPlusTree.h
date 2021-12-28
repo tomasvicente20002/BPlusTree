@@ -29,4 +29,4 @@ typedef struct BPlusTree_st {
 
 BPlusTreeNode* getNewBPlusTreeNode();
 BPlusTree* getNewBPlusTree(int size);
-BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNode* parent, int size, int height);
+BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNode* parent, unsigned int size);

@@ -41,21 +41,23 @@ BPlusTree* getNewBPlusTree(int size)
 }
 
 
-BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNode* parent, int size, int height)
+BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNode* parent, unsigned int size)
 {
 	if (node == NULL)
 		return FALSE;
 
 	BPlusTreeNode* root = *paramRoot;
-	
 
 
 	//Arvore vazia e não tem parent
 	//Porque signifa se tiver parent o root é giual ao parent
-	if (root == NULL && parent == NULL)
+	if (root == NULL)
 	{
 
-		root = node;
+		root = getNewBPlusTreeNode();
+		root->Key = node->Key;
+
+		root->Data = node->Data;
 
 		*paramRoot = root;
 
@@ -67,29 +69,13 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 
 		//O primeiro elemento é o root, inicio do array 
 		root->Siblings[0] = node;
+		//O filho é tambem o novo no
+		root->Child = node;
 
 		root->CurrentSize = 1;
 
 		return TRUE;
 	}
-	else if (parent != NULL)
-	{
-		//Copiar os valores 
-		root = getNewBPlusTreeNode();
-		root->Parent = parent;
-		root->Siblings = malloc(sizeof(BPlusTreeNode) * (size - 1));
-		if (root->Siblings == NULL)
-			return FALSE;
-		root->Siblings[0] = root;
-		root->Key = parent->Key;
-		root->Data = parent->Data;
-		root->CurrentSize = 1;
-
-		*paramRoot = root;
-	}
-
-	if (root->Siblings == NULL)
-		return FALSE;
 
 	//A arvore não está vazia mas tambem não está cheia , por isso podemos inserir no sitio actual
 	//Procurar o local da arvore
@@ -106,7 +92,7 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 					root->Siblings[idx2 + 1] = root->Siblings[idx2];
 				}
 
-				
+
 				root->Siblings[idx] = node;
 
 				//Significa que é o primeiro da ordenação logo o root passa a ser o novo nó
@@ -114,7 +100,7 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 				if (idx == 0)
 				{
 					node->Siblings = root->Siblings;
-					node->CurrentSize = root->CurrentSize;					
+					node->CurrentSize = root->CurrentSize;
 
 					root->Siblings = NULL;
 					root->CurrentSize = 0;
@@ -130,14 +116,13 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 
 			}
 
-
 		}
 
 		//Se chegamos aqui é porque não foi encontrado nenhuma posição no array ja existente 
 		//adionamos ao fim
 		node->Parent = parent;
 		/*
-		Warning	C6386	Buffer overrun while writing to 'root->Siblings': 
+		Warning	C6386	Buffer overrun while writing to 'root->Siblings':
 		the writable size is 'sizeof(BPlusTreeNode)*((size-1))' bytes, but '16' bytes might be written.
 		o "if (root->CurrentSize < size )" já garante que nunca passamos o tamanho do array
 		*/
@@ -152,15 +137,47 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 	//Temos que procurar os nos abaixo e passar o no que é menor que o valor a ser inserido
 	//Só adianta continuarmos a verificar se altura da altura for inferior ao size
 	//se for igual temos que fazer split da tree
-	else if(height < size)
+	else
 	{
-		for (int idx = 0; idx + 1  < size; idx++)
+		//procurar a posicção
+		//está cheio temos que fazer split a meio e adicionar ao root o novo elemento
+
+		
+		for (int idx = 0; idx < root->CurrentSize; idx++)
 		{
-			if (root->Siblings[idx]->Key < node->Key  && node->Key < root->Siblings[idx+1]->Key )
+
+			if (root->Siblings[idx]->Key > node->Key)
 			{
-				return addToBPlusTree(&root->Siblings[idx]->Child, node, root->Siblings[idx], size, height+1);
+				
+				if (root->Siblings[idx]->Child == NULL)
+				{
+					int index = (int)(size / 2);
+
+					BPlusTreeNode* node2 = root->Siblings[index];
+					BPlusTreeNode* node1 = root->Siblings[index + 1];
+
+					//passamos o endereço do root como sendo o parent , porque queremos adicionar um novo elemento ao parent
+					addToBPlusTree(&node2->Parent, node2, node2->Parent, size);
+					//a pai do novo nó2 é o mesmo pai nó 1
+					node1->Parent = node2->Parent;
+
+					addToBPlusTree(&node1->Parent, node1, node1->Parent, size);
+
+					if(node2->Key > node->Key)
+						addToBPlusTree(&node1->Parent, node, node1->Parent, size);
+					else
+						addToBPlusTree(&node2->Parent, node, node2->Parent, size);
+
+				}
+				else
+				{
+					addToBPlusTree(root->Siblings[idx]->Child, node, root->Siblings[idx]->Child, size);
+				}
+				break;
 			}
+
 		}
+
 	}
 
 	return FALSE;
