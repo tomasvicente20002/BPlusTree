@@ -149,14 +149,20 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 				{
 					int index = (int)(size / 2);
 
+					//Rever só é ncessario adicionar o novo nó partido ao meio
+					//isto não faz sentido
+
 					BPlusTreeNode* node2 = root->Siblings[index];
 					BPlusTreeNode* node1 = root->Siblings[index + 1];
 
 					//passamos o endereço do root como sendo o parent , porque queremos adicionar um novo elemento ao parent
+
+
 					if (addToBPlusTree(&node2->Parent, node2, node2->Parent, size))
 					{
 						//a pai do novo nó2 é o mesmo pai nó 1
-						node1->Parent = node2->Parent;
+						if(node1->Parent == NULL)
+							node1->Parent = node2->Parent;
 
 						if (addToBPlusTree(&node1->Parent, node1, node1->Parent, size))
 						{
