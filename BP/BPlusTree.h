@@ -7,7 +7,7 @@
 
 
 typedef struct BPlusTreeNode_st {
-	uint32_t Key;/*Key*/
+	uint32_t *Key;/*Key, alterei para pointer pare referencia em todoas o nos*/
 	void* Data;/*Pointer to data*/
 	struct BPlusTreeNode_st* Parent; /*Parent node*/
 	/*
@@ -26,7 +26,9 @@ typedef struct BPlusTree_st {
 	BPlusTreeNode *root;
 	int size;
 }BPlusTree;
-
+uint32_t* GetNewUint32_t(uint32_t const value);
 BPlusTreeNode* getNewBPlusTreeNode();
 BPlusTree* getNewBPlusTree(int size);
+BPlusTreeNode* GetNewchild(BPlusTreeNode const* source, int size);
 BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNode* parent, unsigned int size);
+

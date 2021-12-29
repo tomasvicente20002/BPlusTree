@@ -41,3 +41,4 @@ BOOL WriteToFile(struct String* fileName, struct StringArray* value);
 char ToUpper(char letter);
 void ToUpperRef(char* letter);
 */
+

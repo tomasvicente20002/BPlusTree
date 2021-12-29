@@ -9,6 +9,15 @@ BOOL CompareKeys(const void* node1, const void* node2)
 	return temp1Node->Key < temp2Node->Key;
 }
 
+
+uint32_t* GetNewUint32_t(uint32_t const value)
+{
+	uint32_t* ptr = malloc(sizeof(uint32_t));
+	*ptr = value;
+
+	return ptr;
+}
+
 BPlusTreeNode* getNewBPlusTreeNode()
 {
 	BPlusTreeNode* ptr = malloc(sizeof(BPlusTreeNode));
@@ -38,6 +47,19 @@ BPlusTree* getNewBPlusTree(int size)
 
 
 	return ptr;
+}
+
+BPlusTreeNode* GetNewchild(BPlusTreeNode const *source, int size)
+{
+	BPlusTreeNode* ptr = getNewBPlusTreeNode();
+	ptr->Key = source->Key;
+	ptr->Data = source->Data;
+	ptr->Siblings = malloc(sizeof(BPlusTreeNode) * size);
+	if(ptr->Siblings!= NULL)
+		ptr->Siblings[0] = ptr;
+
+	return ptr;
+
 }
 
 
@@ -84,7 +106,7 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 		for (int idx = 0; idx < root->CurrentSize; idx++)
 		{
 
-			if (root->Siblings[idx]->Key > node->Key)
+			if (*root->Siblings[idx]->Key > *node->Key)
 			{
 				//Mover os no para a frente
 				for (int idx2 = (root->CurrentSize - 1); idx2 >= idx; idx2--)
@@ -143,40 +165,76 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 		//está cheio temos que fazer split a meio e adicionar ao root o novo elemento		
 		for (int idx = 0; idx < root->CurrentSize; idx++)
 		{
-			if (root->Siblings[idx]->Key > node->Key)
+			if (*root->Siblings[idx]->Key > *node->Key)
 			{				
 				if (root->Siblings[idx]->Child == NULL)
 				{
-					int index = (int)(size / 2);
+					int index = (int)(size / 2) +1;
 
 					//Rever só é ncessario adicionar o novo nó partido ao meio
 					//isto não faz sentido
 
-					BPlusTreeNode* node2 = root->Siblings[index];
-					BPlusTreeNode* node1 = root->Siblings[index + 1];
+					BPlusTreeNode* node1 = root->Siblings[index];
+					node1->CurrentSize = 0;
+					node1->Siblings = malloc(sizeof(BPlusTreeNode) * size);
+					node1->Parent = root->Parent;
+					node1->Child = GetNewchild(node1,size);
+					
+
+					int idx = 0;
+					for (; idx + index < size; idx++)
+					{
+						node1->Siblings[idx] = root->Siblings[index+ idx];
+						root->Siblings[index + idx] = NULL;
+
+						node1->CurrentSize++;
+					}
+
+					//Actualizar o tamanho porque passamos para o novo nó
+					root->CurrentSize -= node1->CurrentSize;
 
 					//passamos o endereço do root como sendo o parent , porque queremos adicionar um novo elemento ao parent
+					if (root->Parent == NULL)
+					{					
 
+						if (addToBPlusTree(&root->Parent, root, root->Parent, size))
+						{
+							*paramRoot = root->Parent;
 
-					if (addToBPlusTree(&node2->Parent, node2, node2->Parent, size))
+							//a pai do novo nó2 é o mesmo pai nó 1
+							if (node1->Parent == NULL)
+								node1->Parent = root->Parent;
+
+							if (addToBPlusTree(&node1->Parent, node1, node1->Parent, size))
+							{
+
+								if (*root->Key > *node->Key)
+									return addToBPlusTree(&node1->Parent, node, node1->Parent, size);
+								else
+									return addToBPlusTree(&root->Parent, node, root->Parent, size);
+							}
+						}
+					}
+					else
 					{
 						//a pai do novo nó2 é o mesmo pai nó 1
-						if(node1->Parent == NULL)
-							node1->Parent = node2->Parent;
+						if (node1->Parent == NULL)
+							node1->Parent = root->Parent;
 
 						if (addToBPlusTree(&node1->Parent, node1, node1->Parent, size))
 						{
 
-							if (node2->Key > node->Key)
+							if (root->Key > node->Key)
 								return addToBPlusTree(&node1->Parent, node, node1->Parent, size);
 							else
-								return addToBPlusTree(&node2->Parent, node, node2->Parent, size);
+								return addToBPlusTree(&root->Parent, node, root->Parent, size);
 						}
 					}
+
 				}
 				else
 				{
-					return addToBPlusTree(root->Siblings[idx]->Child, node, root->Siblings[idx]->Child, size);
+					return addToBPlusTree(&root->Siblings[idx], node, root->Siblings[idx], size);
 				}
 				break;
 			}

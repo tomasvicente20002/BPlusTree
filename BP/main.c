@@ -65,9 +65,9 @@ BOOL ReadFile(char path[], BPlusTree* root)
 		record->motivation) != 0)
 	{
 		node->Data = record;
-		node->Key = record->id;
+		node->Key = GetNewUint32_t(record->id);
 
-		addToBPlusTree(&root->root, node, NULL, root->size);
+		addToBPlusTree(&root->root, node, NULL, root->size, &root->root);
 
 		record = NULL;
 		record = getNewLiveLaureate();
