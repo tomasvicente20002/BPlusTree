@@ -10,14 +10,6 @@ BOOL CompareKeys(const void* node1, const void* node2)
 }
 
 
-uint32_t* GetNewUint32_t(uint32_t const value)
-{
-	uint32_t* ptr = malloc(sizeof(uint32_t));
-	*ptr = value;
-
-	return ptr;
-}
-
 BPlusTreeNode* getNewBPlusTreeNode()
 {
 	BPlusTreeNode* ptr = malloc(sizeof(BPlusTreeNode));
@@ -106,7 +98,7 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 		for (int idx = 0; idx < root->CurrentSize; idx++)
 		{
 
-			if (*root->Siblings[idx]->Key > *node->Key)
+			if (root->Siblings[idx]->Key > node->Key)
 			{
 				//Mover os no para a frente
 				for (int idx2 = (root->CurrentSize - 1); idx2 >= idx; idx2--)
@@ -165,7 +157,7 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 		//está cheio temos que fazer split a meio e adicionar ao root o novo elemento		
 		for (int idx = 0; idx < root->CurrentSize; idx++)
 		{
-			if (*root->Siblings[idx]->Key > *node->Key)
+			if (root->Siblings[idx]->Key > node->Key)
 			{				
 				if (root->Siblings[idx]->Child == NULL)
 				{
@@ -173,13 +165,11 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 
 					//Rever só é ncessario adicionar o novo nó partido ao meio
 					//isto não faz sentido
-
 					BPlusTreeNode* node1 = root->Siblings[index];
 					node1->CurrentSize = 0;
 					node1->Siblings = malloc(sizeof(BPlusTreeNode) * size);
 					node1->Parent = root->Parent;
-					node1->Child = GetNewchild(node1,size);
-					
+					node1->Child = GetNewchild(node1,size);					
 
 					int idx = 0;
 					for (; idx + index < size; idx++)
@@ -208,7 +198,7 @@ BOOL addToBPlusTree(BPlusTreeNode** paramRoot, BPlusTreeNode* node, BPlusTreeNod
 							if (addToBPlusTree(&node1->Parent, node1, node1->Parent, size))
 							{
 
-								if (*root->Key > *node->Key)
+								if (root->Key > node->Key)
 									return addToBPlusTree(&node1->Parent, node, node1->Parent, size);
 								else
 									return addToBPlusTree(&root->Parent, node, root->Parent, size);
