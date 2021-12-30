@@ -69,9 +69,11 @@ BOOL isleafNode(BPlusTreeNode* root)
 
 BPlusTreeNode* getNode(BPlusTreeNode* root, uint32_t key)
 {
+	/*Se não tiver filho significa que chegamos ao ultimos no onde adicionmos os nos*/
 	if (isleafNode(root))
 		return root;
 
+	//Procurar o no 
 	for (int idx = 0; idx < root->CurrentSize; idx++)
 	{
 		if (root->Contents[idx]->Key > key)
@@ -85,6 +87,7 @@ BPlusTreeNode* getNode(BPlusTreeNode* root, uint32_t key)
 		}
 	}
 
+	//Se não encontramos significa que o key é maior que ultimo no, por isso mandamos o ultimo nó
 	return getNode(root->Contents[root->CurrentSize - 1]->Child, key);
 }
 
@@ -143,17 +146,20 @@ BOOL addNewChild(BPlusTree* paramRoot, BPlusTreeNode* root, BPlusTreeNode* node)
 
 BPlusTreeNode* Split(BPlusTree* paramRoot, BPlusTreeNode* root)
 {
+	/*Meio do array*/
 	int index = (int)(paramRoot->size / 2) + 1;
 
 	BOOL isParentRootNull = root->Parent == NULL;
 
+	/*Se o pai do root for NULL ciramos um novo*/
 	BPlusTreeNode* newParent = isParentRootNull ? getNewBPlusTreeNode() : root->Parent;
 
 	if (isParentRootNull)
 	{
-		newParent->Contents = getNewBPlusTreeArray(paramRoot->size);	
+		newParent->Contents = getNewBPlusTreeArray(paramRoot->size);
 	}
 
+	/* Criar um novo nó com o segundo meio da lista*/
 	BPlusTreeNode* child2 = getNewBPlusTreeNode();
 
 	if (child2 == NULL)
@@ -164,16 +170,18 @@ BPlusTreeNode* Split(BPlusTree* paramRoot, BPlusTreeNode* root)
 	if (child2->Contents == NULL)
 		return NULL;
 
-
+	/*Copiar os no para o novo no*/
 	for (int idx = 0; idx + index < paramRoot->size; idx++)
 	{
 		child2->Contents[idx] = root->Contents[index + idx];
 		root->Contents[index + idx] = NULL;
 		child2->CurrentSize++;
 	}
+
+	/*O tamanho passa a ser o tamanho atual menos o tamnho do novo nó*/
 	root->CurrentSize -= child2->CurrentSize;
 
-	
+	/*Só adicionamos o root ao novo pai se o pai for null, porque se não for null significa que já está no pai*/
 	if (isParentRootNull)
 	{
 		if (!addNewChild(paramRoot, newParent, root))
@@ -183,6 +191,7 @@ BPlusTreeNode* Split(BPlusTree* paramRoot, BPlusTreeNode* root)
 	if (!addNewChild(paramRoot, newParent, child2))
 		return FALSE;
 
+	/*Se o parent era NULL signifa que era o root principal, por isso o  novo pai passa o root principal*/
 	if (isParentRootNull)
 	{
 		paramRoot->root = newParent;
@@ -193,13 +202,14 @@ BPlusTreeNode* Split(BPlusTree* paramRoot, BPlusTreeNode* root)
 
 BOOL addToNode(BPlusTree* paramRoot, BPlusTreeNode* root, void* data, uint32_t key)
 {
+	/**/
 	if (root->CurrentSize < paramRoot->size)
 	{
 		for (int idx = 0; idx < root->CurrentSize; idx++)
 		{
 			if (root->Contents[idx]->Key > key)
 			{
-				//Mover os no para a frente
+				/*Mover os no para a frente*/
 				for (int idx2 = (root->CurrentSize - 1); idx2 >= idx; idx2--)
 				{
 					root->Contents[idx2 + 1] = root->Contents[idx2];
@@ -213,8 +223,11 @@ BOOL addToNode(BPlusTree* paramRoot, BPlusTreeNode* root, void* data, uint32_t k
 			}
 		}
 
-		//Se chegamos aqui é porque não foi encontrado nenhuma posição no array ja existente 
-		//adionamos ao fim
+		/*Se chegamos aqui é porque não foi encontrado nenhuma posição no array ja existente
+		* adionamos ao fim
+		*/
+
+
 		/*
 		Warning	C6386	Buffer overrun while writing to 'root->Siblings':
 		the writable size is 'sizeof(BPlusTreeNode)*((size-1))' bytes, but '16' bytes might be written.
@@ -238,7 +251,7 @@ BOOL addToNode(BPlusTree* paramRoot, BPlusTreeNode* root, void* data, uint32_t k
 			return addToNode(paramRoot, aux, data, key);
 		}
 	}
-	 
+
 	return FALSE;
 }
 
@@ -271,12 +284,6 @@ BOOL addToBPlusTree(BPlusTree* paramRoot, void* data, uint32_t key)
 		return TRUE;
 	}
 
-	//A arvore não está vazia mas tambem não está cheia , por isso podemos inserir no sitio actual
-	//Procurar o local da arvore
-
-	//Temos que procurar os nos abaixo e passar o no que é menor que o valor a ser inserido
-	//Só adianta continuarmos a verificar se altura da altura for inferior ao size
-	//se for igual temos que fazer split da tree
 
 	BPlusTreeNode* aux = getNode(paramRoot->root, key);
 
