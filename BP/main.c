@@ -32,23 +32,26 @@ laureate_t* getNewLiveLaureate()
 
 BOOL ReadFile(char path[], BPlusTree* root)
 {
-	FILE* ptrFile = fopen(path, "r");
-
+	FILE* ptrFile;
+	fopen_s(&ptrFile, path, "r");
 
 	if (ptrFile == NULL)
 		return FALSE;
 
 	laureate_t* record = getNewLiveLaureate();
-	BPlusTreeNode* node = getNewBPlusTreeNode();
 
-	if (record == NULL || node == NULL)
+	if (record == NULL)
 	{
 		fclose(ptrFile);
 		return FALSE;
 	}
 
 
-
+	/*
+	Warning	C4996	'fscanf': This function or variable may be unsafe.Consider using fscanf_s instead.To disable deprecation, use _CRT_SECURE_NO_WARNINGS.See online help for details.	
+	*/
+#pragma warning( push )
+#pragma warning( disable : 4996 )
 	while (fscanf(ptrFile, " %d;%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%d;%[^;];%d;%[^\n]",
 		&record->id,
 		record->firstname,
@@ -64,20 +67,14 @@ BOOL ReadFile(char path[], BPlusTree* root)
 		&record->share,
 		record->motivation) != 0)
 	{
-		node->Data = record;
-		node->Key = GetNewUint32_t(record->id);
+#pragma warning( pop )
 
-		addToBPlusTree(&root->root, node, NULL, root->size, &root->root);
+		addToBPlusTree(root, record,record->id);
 
 		record = NULL;
 		record = getNewLiveLaureate();
 
-		node = NULL;
-		node = getNewBPlusTreeNode();
-
-		printf("%d", root->root->Key);
-
-		if (record == NULL|| node == NULL)
+		if (record == NULL)
 		{
 			fclose(ptrFile);
 			return FALSE;
