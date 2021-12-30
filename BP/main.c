@@ -69,7 +69,8 @@ BOOL ReadFile(char path[], BPlusTree* root)
 	{
 #pragma warning( pop )
 
-		addToBPlusTree(root, record,record->id);
+		if (!addToBPlusTree(root, record, record->id))
+			printf("Erro");
 
 		record = NULL;
 		record = getNewLiveLaureate();

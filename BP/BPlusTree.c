@@ -134,7 +134,8 @@ BOOL addNewChild(BPlusTree* paramRoot, BPlusTreeNode* root, BPlusTreeNode* node)
 	}
 	else
 	{
-		Split(paramRoot, root);
+		if (Split(paramRoot, root) != NULL)
+			return TRUE;
 	}
 
 	return FALSE;
@@ -175,10 +176,12 @@ BPlusTreeNode* Split(BPlusTree* paramRoot, BPlusTreeNode* root)
 	
 	if (isParentRootNull)
 	{
-		addNewChild(paramRoot, newParent, root);
+		if (!addNewChild(paramRoot, newParent, root))
+			return FALSE;
 	}
 
-	addNewChild(paramRoot, newParent, child2);
+	if (!addNewChild(paramRoot, newParent, child2))
+		return FALSE;
 
 	if (isParentRootNull)
 	{
@@ -277,8 +280,8 @@ BOOL addToBPlusTree(BPlusTree* paramRoot, void* data, uint32_t key)
 
 	BPlusTreeNode* aux = getNode(paramRoot->root, key);
 
-	addToNode(paramRoot, aux, data, key);
+	if (aux == NULL)
+		return FALSE;
 
-
-	return FALSE;
+	return  addToNode(paramRoot, aux, data, key);
 }
